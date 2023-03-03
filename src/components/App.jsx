@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { GlobalStyle } from './GlobalStyle';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
@@ -10,6 +11,23 @@ export class App extends Component {
     contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem('contacts');
+    if (savedContacts !== null) {
+      const parsedContacts = JSON.parse(savedContacts);
+      this.setState({ contacts: parsedContacts });
+      return;
+    }
+    this.setState({ contacts: [] });
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+    }
+  };
+
 
   addContact = (newContact) => {
      const arrayOfContactsName = [];
@@ -49,6 +67,7 @@ export class App extends Component {
     
     return (
       <div>
+         <GlobalStyle />
          <h1>Phonebook</h1>
         <ContactForm onSubmit={this.addContact} />
 
